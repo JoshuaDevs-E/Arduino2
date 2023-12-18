@@ -1,48 +1,34 @@
-const int botonPin = 3;
-const int ledVerdePin = 9;
-const int ledRojoPin = 10;
+const int buttonPin = 2; // Cambiar por el pin del botón
+const int ledVerdePin = 3; // Cambiar por el pin del LED verde
+const int ledRojoPin = 4; // Cambiar por el pin del LED rojo
 
-int contadorBoton = 0;
+int buttonPressCount = 0;
 
 void setup() {
-  pinMode(botonPin, INPUT);
+  pinMode(buttonPin, INPUT);
   pinMode(ledVerdePin, OUTPUT);
   pinMode(ledRojoPin, OUTPUT);
-  digitalWrite(botonPin, HIGH);
 }
 
 void loop() {
-  if (digitalRead(botonPin) == LOW) {
-    delay(500);
-    contadorBoton++;
+  int buttonState = digitalRead(buttonPin);
+  if (buttonState == HIGH) {
+    buttonPressCount++;
+    delay(200); // Para evitar la detección de pulsaciones falsas
   }
-  if (contadorBoton >= 15) {
-    parpadearLEDs();
-  } else if (contadorBoton >= 10) {
-    secuenciasLedsBtnPresionados(0, 1);
-  } else if (contadorBoton >= 5) {
-    secuenciasLedsBtnPresionados(1, 0);
-  } else {
-    apagarLEDs();
+
+  if (buttonPressCount > 10 && buttonPressCount <= 15) {
+    digitalWrite(ledVerdePin, LOW);
+    digitalWrite(ledRojoPin, HIGH);
+  } else if (buttonPressCount >= 5 && buttonPressCount <= 10) {
+    digitalWrite(ledVerdePin, HIGH);
+    digitalWrite(ledRojoPin, LOW);
+  } else if (buttonPressCount > 15) {
+    digitalWrite(ledVerdePin, HIGH);
+    digitalWrite(ledRojoPin, HIGH);
+    delay(1000);
+    digitalWrite(ledVerdePin, LOW);
+    digitalWrite(ledRojoPin, LOW);
+    delay(1000);
   }
-}
-
-void parpadearLEDs() {
-  digitalWrite(ledVerdePin, HIGH);
-  digitalWrite(ledRojoPin, HIGH);
-  delay(500);
-
-  digitalWrite(ledVerdePin, LOW);
-  digitalWrite(ledRojoPin, LOW);
-  delay(500);
-}
-
-void secuenciasLedsBtnPresionados(int ledVerde, int LedRojo) {
-  digitalWrite(ledVerdePin, ledVerde);
-  digitalWrite(ledRojoPin, LedRojo);
-}
-
-void apagarLEDs() {
-  digitalWrite(ledVerdePin, LOW);
-  digitalWrite(ledRojoPin, LOW);
 }
